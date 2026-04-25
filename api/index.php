@@ -8,17 +8,26 @@ try {
     require __DIR__ . '/../vendor/autoload.php';
 
     $app = require_once __DIR__ . '/../bootstrap/app.php';
-    $app->useStoragePath('/tmp');
 
-    // Boot semua service providers
-    $app->bootstrapWith([
-        \Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables::class,
-        \Illuminate\Foundation\Bootstrap\LoadConfiguration::class,
-        \Illuminate\Foundation\Bootstrap\HandleExceptions::class,
-        \Illuminate\Foundation\Bootstrap\RegisterFacades::class,
-        \Illuminate\Foundation\Bootstrap\RegisterProviders::class,
-        \Illuminate\Foundation\Bootstrap\BootProviders::class,
-    ]);
+    // Override storage DAN cache ke /tmp
+    $app->useStoragePath('/tmp');
+    $app->instance('path.bootstrap', '/tmp');
+
+    // Buat direktori yang dibutuhkan di /tmp
+    $dirs = [
+        '/tmp/cache',
+        '/tmp/views',
+        '/tmp/sessions',
+        '/tmp/framework',
+        '/tmp/framework/cache',
+        '/tmp/framework/views',
+        '/tmp/framework/sessions',
+        '/tmp/logs',
+    ];
+    foreach ($dirs as $dir) {
+        if (!is_dir($dir))
+            mkdir($dir, 0777, true);
+    }
 
     $kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
     $request = Illuminate\Http\Request::capture();
