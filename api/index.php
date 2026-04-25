@@ -2,7 +2,6 @@
 ini_set('display_errors', '1');
 error_reporting(E_ALL);
 
-// Buat direktori di /tmp
 $dirs = [
     '/tmp/framework/cache/data',
     '/tmp/framework/views',
@@ -23,6 +22,10 @@ $app = require_once __DIR__ . '/../bootstrap/app.php';
 
 $app->useStoragePath('/tmp');
 $app->useBootstrapPath('/tmp/bootstrap');
+
+// Aktifkan debug
+$_ENV['APP_DEBUG'] = 'true';
+$_ENV['APP_ENV'] = 'local';
 
 $kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
 $request = Illuminate\Http\Request::capture();
